@@ -33,6 +33,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 
 const MODEL_FILE = 'eye.glb';   // <- put your exported model next to this file
 
@@ -92,7 +93,12 @@ function setModel(obj) {
 }
 
 // 5) load your model (a placeholder shows if the file is missing)
-new GLTFLoader().load(
+const loader = new GLTFLoader();
+// Lets the viewer open models exported with "Compression" (Draco) turned on
+const draco = new DRACOLoader();
+draco.setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/libs/draco/gltf/');
+loader.setDRACOLoader(draco);
+loader.load(
   MODEL_FILE,
   (gltf) => setModel(gltf.scene),
   undefined,
@@ -101,7 +107,7 @@ new GLTFLoader().load(
       new THREE.TorusKnotGeometry(1, 0.35, 128, 16),
       new THREE.MeshStandardMaterial({ color: 0xd9566f, roughness: 0.4 })
     );
-    m.name = 'Placeholder (add model.glb)';
+    m.name = 'Placeholder: eye.glb did not load (check the file name and the Console)';
     setModel(m);
   }
 );
